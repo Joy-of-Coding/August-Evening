@@ -10,3 +10,4 @@ Export as JSON/CSV (download file)
 Collaborator: Mindi Briese
 Contributor: Anna Rankin
 Contributor: Glenn Byers
+Contributor: Dorian Germain Zambo Zambo
