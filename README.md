@@ -1,3 +1,14 @@
+# Budget Buddy
+Budget Buddy is a simple, user-friendly expense tracker featuring a React frontend and a lightweight Python (FastAPI) backend. All transactions, accounts, and categories are stored securely in your browser's localStorage—no database required.
+
+With Budget Buddy, you can:
+
+- Add expenses and income, selecting both account and category
+- Track budgets by category and monitor your progress
+- Print reports with optimized browser print styles
+- Export your data as JSON or CSV files
+- (Optional) Send data to a Python backend to receive a CSV response—no database needed
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -68,16 +79,6 @@ export default tseslint.config([
 ])
 ```
 
-
-# August-Evening
-Tiny, loveable Expense Tracker with a React frontend and a Python (FastAPI) backend, no database (all transactions/accounts/categories live in browser localStorage).
-You’ll be able to:
-Add expenses/income, pick Account + Category
-Track budgets per category and see progress
-Print (browser print styles)
-Export as JSON/CSV (download file)
-(Optional) POST to a tiny Python backend to get a CSV response (no DB)
-
 Collaborator: Mindi Briese
 Collaborator: John Schlautman
 Contributor: Anna Rankin
@@ -85,3 +86,4 @@ Contributor: Eddy Nelson Rivera
 Contributor: Kai Pannu
 Contributor: Glenn Byers
 Contributer: Michelle Evans
+Contributer: Don L Evans
