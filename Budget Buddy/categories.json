@@ -1,0 +1,127 @@
+{
+    "categories": [
+        {
+            "name": "Income",
+            "subcategories": [
+                "Salary",
+                "Freelance",
+                "Investments",
+                "Rental Income",
+                "Other Income"
+            ]
+        },
+        {
+            "name": "Housing",
+            "subcategories": [
+                "Rent/Mortgage",
+                "Utilities",
+                "Home Insurance",
+                "Maintenance/Repairs",
+                "Property Taxes"
+            ]
+        },
+        {
+            "name": "Transportation",
+            "subcategories": [
+                "Fuel",
+                "Car Payment",
+                "Insurance",
+                "Maintenance",
+                "Public Transit",
+                "Ride Sharing"
+            ]
+        },
+        {
+            "name": "Food & Dining",
+            "subcategories": [
+                "Groceries",
+                "Restaurants",
+                "Coffee Shops",
+                "Takeout/Delivery"
+            ]
+        },
+        {
+            "name": "Health & Wellness",
+            "subcategories": [
+                "Health Insurance",
+                "Medical Bills",
+                "Dental",
+                "Vision",
+                "Pharmacy",
+                "Gym/Fitness"
+            ]
+        },
+        {
+            "name": "Debt Payments",
+            "subcategories": [
+                "Credit Card",
+                "Student Loan",
+                "Personal Loan",
+                "Other Debt"
+            ]
+        },
+        {
+            "name": "Savings & Investments",
+            "subcategories": [
+                "Emergency Fund",
+                "Retirement",
+                "Stocks & Bonds",
+                "College Fund",
+                "Other Savings"
+            ]
+        },
+        {
+            "name": "Entertainment & Leisure",
+            "subcategories": [
+                "Streaming Services",
+                "Movies/Events",
+                "Hobbies",
+                "Subscriptions",
+                "Travel/Vacations"
+            ]
+        },
+        {
+            "name": "Shopping",
+            "subcategories": [
+                "Clothing",
+                "Electronics",
+                "Household Items",
+                "Gifts"
+            ]
+        },
+        {
+            "name": "Education",
+            "subcategories": [
+                "Tuition",
+                "Books & Supplies",
+                "Courses/Training"
+            ]
+        },
+        {
+            "name": "Personal Care",
+            "subcategories": [
+                "Haircuts",
+                "Salon/Spa",
+                "Cosmetics",
+                "Toiletries"
+            ]
+        },
+        {
+            "name": "Charity & Donations",
+            "subcategories": [
+                "Religious Giving",
+                "Nonprofits",
+                "Fundraisers"
+            ]
+        },
+        {
+            "name": "Miscellaneous",
+            "subcategories": [
+                "Pet Care",
+                "Childcare",
+                "Gifts",
+                "Other"
+            ]
+        }
+    ]
+}
