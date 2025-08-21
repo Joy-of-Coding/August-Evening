@@ -51,7 +51,7 @@ function App() {
           <img
             src={localStorage.getItem('budgetBuddyProfileImage') || "https://thumb.ac-illust.com/8a/8abc6308b0fdc74c612b769383d2ad7e_t.jpeg"}
             alt="User Profile"
-            style={{ width: 68, height: 68, cursor: 'pointer', borderRadius: '50%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', objectFit: 'cover' }}
+            style={{ width: 102, height: 102, cursor: 'pointer', borderRadius: '50%', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', objectFit: 'cover' }}
             onClick={() => setRoute('profile')}
           />
         </div>
