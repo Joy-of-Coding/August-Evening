@@ -5,10 +5,11 @@ interface SavingsGoalProps {
     name: string;
     target: number;
     current: number;
+    pointsCalculation?: string;
     onDateChange?: (date: string) => void;
 }
 
-const SavingsGoal: React.FC<SavingsGoalProps> = ({ name, target, current, onDateChange }) => {
+const SavingsGoal: React.FC<SavingsGoalProps> = ({ name, target, current, pointsCalculation, onDateChange }) => {
     const [goalDate, setGoalDate] = useState<string>('');
 
   // Calculate progress percentage
@@ -24,6 +25,11 @@ const SavingsGoal: React.FC<SavingsGoalProps> = ({ name, target, current, onDate
         <div className="savings-goal" style={{ border: '1px solid #ccc', borderRadius: 8, padding: 16, maxWidth: 400 }}>
             <h2>Saving Goals</h2>
             <h3>{name}</h3>
+            {pointsCalculation && (
+                <div style={{ marginBottom: 8, fontStyle: 'italic', color: '#555' }}>
+                    Points calculation: {pointsCalculation}
+                </div>
+            )}
             <div style={{ marginBottom: 8 }}>
                 Target: ${typeof target === 'number' ? target.toLocaleString() : '0'}<br />
                 Current: ${typeof current === 'number' ? current.toLocaleString() : '0'}
