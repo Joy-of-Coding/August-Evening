@@ -1,4 +1,5 @@
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Header from "./components/Header";
 import MonthlyOverviewBar from "./components/MonthlyOverviewBar";
 import SpendingByCategoryPie from "./components/SpendingByCategoryPie";
@@ -7,9 +8,10 @@ import DiscretionaryExpense from "./components/DiscretionaryExpense";
 import FixedExpenses from "./components/FixedExpenses";
 import Income from "./components/Income";
 import type { Expense, ExpenseCategory, Income as IncomeType, CategoryTotal } from "./types";
-import { MonthlySummary } from "./components/MonthlySummary"; // <-- Import MonthlySummary
+// import { MonthlySummary } from "./components/MonthlySummary"; // <-- Import MonthlySummary
+import CreditsPage from "./components/CreditsPage"; 
 
-function App() {
+function Dashboard() {
   // Example data — replace with real state or API data later
   const incomes: IncomeType[] = [
     { id: "inc-1", source: "Salary", amount: 4200, date: "2025-08-01" },
@@ -41,6 +43,12 @@ function App() {
   return (
     <div className="main-container">
       <Header />
+      <div style={{ padding: "20px", textAlign: "center" }}>
+        <Link to="/credits" style={{ color: "#00bcd4", textDecoration: "underline" }}>
+          View Credits Page
+        </Link>
+      </div>
+      
       <MonthlyOverviewBar
         monthlyExpenseTotal={expenses.reduce((sum, exp) => sum + exp.amount, 0)}
         monthlyIncomeTotal={incomes.reduce((sum, inc) => sum + inc.amount, 0)}
@@ -64,6 +72,17 @@ function App() {
         // }}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/credits" element={<CreditsPage />} />
+      </Routes>
+    </Router>
   );
   }
 
