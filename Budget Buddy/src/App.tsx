@@ -8,7 +8,7 @@ import DiscretionaryExpense from "./components/DiscretionaryExpense";
 import FixedExpenses from "./components/FixedExpenses";
 import Income from "./components/Income";
 import type { Expense, ExpenseCategory, Income as IncomeType, CategoryTotal } from "./types";
-import { MonthlySummary } from "./components/MonthlySummary"; // <-- Import MonthlySummary
+// import { MonthlySummary } from "./components/MonthlySummary"; // <-- Import MonthlySummary
 import CreditsPage from "./components/CreditsPage"; 
 
 function Dashboard() {
