@@ -6,6 +6,11 @@ interface UserProfileProps {
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ onSave, initialName }) => {
+  const defaultImage = "https://thumb.ac-illust.com/8a/8abc6308b0fdc74c612b769383d2ad7e_t.jpeg";
+  const handleResetImage = () => {
+    setImageUrl(defaultImage);
+    localStorage.setItem('budgetBuddyProfileImage', defaultImage);
+  };
   const [name, setName] = useState(initialName || "");
   const [imageUrl, setImageUrl] = useState<string | null>(() => localStorage.getItem('budgetBuddyProfileImage') || null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -59,12 +64,20 @@ const UserProfile: React.FC<UserProfileProps> = ({ onSave, initialName }) => {
         onChange={e => setName(e.target.value)}
         style={{ padding: 8, fontSize: "1em", borderRadius: 6, border: "1px solid #fff", width: "100%", marginBottom: 24 }}
       />
-      <button
-        onClick={() => onSave(name)}
-        style={{ padding: "8px 24px", fontSize: "1em", borderRadius: 6, background: "#fff", color: "#334155", fontWeight: 700, border: "none", cursor: "pointer" }}
-      >
-        Save & Return
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
+        <button
+          onClick={() => onSave(name)}
+          style={{ padding: "8px 24px", fontSize: "1em", borderRadius: 6, background: "#fff", color: "#334155", fontWeight: 700, border: "none", cursor: "pointer" }}
+        >
+          Save & Return
+        </button>
+        <button
+          onClick={handleResetImage}
+          style={{ padding: "8px 24px", fontSize: "1em", borderRadius: 6, background: "#fff", color: "#334155", fontWeight: 700, border: "none", cursor: "pointer" }}
+        >
+          Reset Image
+        </button>
+      </div>
     </div>
   );
 };
