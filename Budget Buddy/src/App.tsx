@@ -44,7 +44,6 @@ function Dashboard() {
     <div className="main-container">
       <Header />
       <div style={{ padding: "20px", textAlign: "center" }}>
-        <h1>BudgetBuddy Dashboard (Coming Soon)</h1>
         <Link to="/credits" style={{ color: "#00bcd4", textDecoration: "underline" }}>
           View Credits Page
         </Link>
@@ -85,6 +84,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
+  }
 
 export default App;
