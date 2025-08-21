@@ -23,7 +23,7 @@ const MonthlyOverviewBar: React.FC<MonthlyOverviewBarProps> = ({ monthlyExpenseT
   return (
     <div className="monthly-overview-bar-container">
       <div className="monthly-overview-bar-labels">
-        <span>0</span>
+        <span>Start</span>
         <span>Max Budget: {maxBudget.toLocaleString()}</span>
       </div>
       <div className="monthly-overview-bar">

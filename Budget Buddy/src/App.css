@@ -12,10 +12,6 @@ body, #root {
 	width: 1000px;
 	min-height: 700px;
 	margin: 0 auto;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 	padding: 48px 40px;
 	background: #334155;
 	border-radius: 28px;
@@ -24,5 +20,6 @@ body, #root {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-  color: #fff;
+	color: #fff;
+	border: 4px solid #fff;
 }
