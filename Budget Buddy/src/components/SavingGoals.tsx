@@ -239,7 +239,8 @@ const SavingGoals = () => {
         padding: "12px", 
         background: "#ecfdf5", 
         borderRadius: "8px",
-        border: "1px solid #d1fae5"
+        border: "1px solid #d1fae5",
+        color: "#222"
       }}>
         <div style={{ 
           display: "flex", 
@@ -247,12 +248,12 @@ const SavingGoals = () => {
           gap: 4
         }}>
           <div><strong>Total Goals Progress:</strong>
-            <span style={{ marginLeft: 8, color: "#059669" }}>
+            <span style={{ marginLeft: 8, color: "#006e40ff", fontWeight: 600 }}>
               ${goals.reduce((sum, goal) => sum + goal.current, 0).toFixed(2)} / ${goals.reduce((sum, goal) => sum + goal.target, 0).toFixed(2)}
             </span>
           </div>
           <div><strong>Remaining:</strong>
-            <span style={{ marginLeft: 8, color: "#dc2626" }}>
+            <span style={{ marginLeft: 8, color: "#7c1c1c", fontWeight: 600 }}>
               ${goals.reduce((sum, goal) => sum + Math.max(0, goal.target - goal.current), 0).toFixed(2)}
             </span>
           </div>

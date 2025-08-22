@@ -26,6 +26,7 @@ body,
   align-items: center;
   justify-content: flex-start;
   color: #fff;
+  border: 20px solid #3d88d2;
 }
 
 /* Enhanced title styling for better contrast */
