@@ -1,181 +1,245 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { LocalStorage } from "./LocalStorage";
-import type { IncomeSource } from "./LocalStorage";
+import React, { useEffect, useMemo, useState } from 'react';
+import TransactionRow, { type Transaction } from './transactions/TransactionRow';
+import { useLocalStorageList } from './expenses/useLocalStorageList';
 
 const Income: React.FC = () => {
-  const [incomes, setIncomes] = useState<IncomeSource[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [categories, setCategories] = useLocalStorageList('bb_income_categories', [
+    "Salary", "Freelance", "Investment", "Business", "Other Income"
+  ]);
+  const [accounts, setAccounts] = useLocalStorageList('bb_accounts', [
+    "Checking", "Savings", "Credit Card", "Investment Account", "Emergency Fund", "Business Account"
+  ]);
+  
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+  const [pendingRowForCategory, setPendingRowForCategory] = useState<string | null>(null);
 
-  // Load from LocalStorage on mount
+  const [showAddAccount, setShowAddAccount] = useState(false);
+  const [newAccount, setNewAccount] = useState('');
+  const [pendingRowForAccount, setPendingRowForAccount] = useState<string | null>(null);
+
+  const [rows, setRows] = useState<Transaction[]>([]);
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  // Initialize rows when categories and accounts are available, and load from localStorage
   useEffect(() => {
-    const storedIncomes = LocalStorage.getIncome();
-    if (storedIncomes.length > 0) {
-      setIncomes(storedIncomes);
-    } else {
-      // Set default income if no stored data
-      setIncomes([{ name: "", amount: 0, date: "" }]);
+    if (categories.length > 0 && accounts.length > 0) {
+      try {
+        const stored = localStorage.getItem('bb_tx_income');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Ensure each row has a valid date and account
+            const rowsWithDates = parsed.map(row => ({
+              ...row,
+              date: row.date || new Date().toISOString().split('T')[0],
+              account: row.account || accounts[0] || 'Checking',
+              type: 'income' as const
+            }));
+            setRows(rowsWithDates);
+          } else {
+            // No stored rows, create initial row
+            setRows([{
+              id: 'inc-1',
+              date: new Date().toISOString().split('T')[0],
+              account: accounts[0] || 'Checking',
+              category: categories[0] || 'Salary',
+              payee: '',
+              amount: 0,
+              type: 'income' as const
+            }]);
+          }
+        } else {
+          // No stored data, create initial row
+          setRows([{
+            id: 'inc-1',
+            date: new Date().toISOString().split('T')[0],
+            account: accounts[0] || 'Checking',
+            category: categories[0] || 'Salary',
+            payee: '',
+            amount: 0,
+            type: 'income' as const
+          }]);
+        }
+      } catch (error) {
+        console.error('Error loading income from localStorage:', error);
+        // Error loading from localStorage, create initial row
+        setRows([{
+          id: 'inc-1',
+          date: new Date().toISOString().split('T')[0],
+          account: accounts[0] || 'Checking',
+          category: categories[0] || 'Salary',
+          payee: '',
+          amount: 0,
+          type: 'income' as const
+        }]);
+      }
     }
-    setIsLoaded(true);
-  }, []);
+  }, [categories, accounts]);
 
-  // Save to LocalStorage on change, but only after initial load
+  // persist rows and notify listeners
   useEffect(() => {
-    if (isLoaded) {
-      LocalStorage.setIncome(incomes);
-    }
-  }, [incomes, isLoaded]);
+    try { localStorage.setItem('bb_tx_income', JSON.stringify(rows)); } catch {}
+    try { window.dispatchEvent(new Event('bb:income-updated')); } catch {}
+  }, [rows]);
 
-  const handleChange = (
-    index: number,
-    field: keyof IncomeSource,
-    value: string
-  ) => {
-    const updated = incomes.map((income, i) =>
-      i === index
-        ? { ...income, [field]: field === "amount" ? Number(value) : value }
-        : income
-    );
-    setIncomes(updated);
-  };
-
-  const addIncome = (index: number) => {
-    const updated = [
-      ...incomes.slice(0, index + 1),
-      { name: "", amount: 0, date: "" },
-      ...incomes.slice(index + 1),
-    ];
-    setIncomes(updated);
-  };
-
-  const removeIncome = (index: number) => {
-    if (incomes.length === 1) return;
-    setIncomes(incomes.filter((_, i) => i !== index));
-  };
+  const payeeSuggestions = useMemo(() => {
+    const set = new Set<string>();
+    rows.forEach(r => { if (r.payee?.trim()) set.add(r.payee.trim()); });
+    return Array.from(set).slice(-25);
+  }, [rows]);
 
   const totalIncome = useMemo(() => {
-    return incomes.reduce(
-      (sum, inc) => sum + (isNaN(inc.amount) ? 0 : inc.amount),
-      0
-    );
-  }, [incomes]);
+    return rows.reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
+  }, [rows]);
 
-  // Store totalIncome in LocalStorage for use in MonthlyOverviewBar
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem("budgetBuddyTotalIncome", totalIncome.toString());
+  const addNewCategory = () => {
+    const c = newCategory.trim();
+    if (!c || categories.includes(c)) return;
+    setCategories([...categories, c]);
+    if (pendingRowForCategory) {
+      setRows(prev => prev.map(r => r.id === pendingRowForCategory ? { ...r, category: c } : r));
+      setPendingRowForCategory(null);
     }
-  }, [totalIncome, isLoaded]);
+    setNewCategory('');
+    setShowAddCategory(false);
+  };
+
+  const addNewAccount = () => {
+    const a = newAccount.trim();
+    if (!a || accounts.includes(a)) return;
+    setAccounts([...accounts, a]);
+    if (pendingRowForAccount) {
+      setRows(prev => prev.map(r => r.id === pendingRowForAccount ? { ...r, account: a } : r));
+      setPendingRowForAccount(null);
+    }
+    setNewAccount('');
+    setShowAddAccount(false);
+  };
+
+  const removeCategory = (name: string) => {
+    if (!name) return;
+    if (categories.length <= 1) return;
+    if (rows.some(r => r.category === name)) return;
+    setCategories(categories.filter(c => c !== name));
+  };
+
+  const removeAccount = (name: string) => {
+    if (!name) return;
+    if (accounts.length <= 1) return;
+    if (rows.some(r => r.account === name)) return;
+    setAccounts(accounts.filter(a => a !== name));
+  };
+
+  const handleChange = (id: string, patch: Partial<Transaction>) => {
+    setRows(prev => prev.map(r => r.id === id ? { ...r, ...patch } : r));
+  };
+
+  const handleAdd = () => {
+    setRows(prev => ([...prev, {
+      id: `inc-${Date.now()}`,
+      date: new Date().toISOString().split('T')[0],
+      account: accounts[0] || 'Checking',
+      category: categories[0] || 'Salary',
+      payee: '',
+      amount: 0,
+      type: 'income' as const
+    }]));
+  };
+
+  const handleRemove = (id: string) => {
+    setRows(prev => prev.length > 1 ? prev.filter(r => r.id !== id) : prev);
+  };
 
   return (
-    <div style={{ maxWidth: 500, margin: "0 auto" }}>
-      <h2>Source Income</h2>
-      {/* Labels Row */}
-      <div style={{ display: "flex", alignItems: "center", marginBottom: 4 }}>
-        <label style={{ flex: 2, marginRight: 8, textAlign: "left" }}>
-          Account
-        </label>
-        <label style={{ flex: 1, marginRight: 8, textAlign: "left" }}>
-          Amount
-        </label>
-        <label style={{ flex: 1, marginRight: 8, textAlign: "left" }}>
-          Date
-        </label>
-        <span style={{ width: 48 }}></span> {/* Space for buttons */}
-      </div>
-      {incomes.map((income, idx) => (
-        <div
-          key={idx}
-          style={{ display: "flex", alignItems: "center", marginBottom: 8 }}
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <h2 style={{ margin: 0 }}>Source Income</h2>
+        <button
+          onClick={() => setIsExpanded(v => !v)}
+          style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', color: '#1f2937', fontWeight: '500' }}
         >
-          <input
-            type="text"
-            placeholder="Name"
-            value={income.name}
-            onChange={(e) => handleChange(idx, "name", e.target.value)}
-            style={{ marginRight: 8, flex: 2 }}
-          />
-          <input
-            type="number"
-            placeholder="Amount"
-            value={income.amount}
-            onChange={(e) => handleChange(idx, "amount", e.target.value)}
-            style={{ marginRight: 8, flex: 1 }}
-          />
-          <input
-            type="date"
-            value={income.date}
-            onChange={(e) => handleChange(idx, "date", e.target.value)}
-            style={{ marginRight: 8, flex: 1 }}
-          />
-          {/* <button
-            onClick={() => addIncome(idx)}
-            title="Add income"
-            style={{ marginRight: 4, fontSize: '10px', padding: '0.34em 0.80em', fontWeight: 900 }}
-          >
-            +
-          </button>
-          <button
-            onClick={() => removeIncome(idx)}
-            title="Remove income"
-            disabled={incomes.length === 1}
-            style={{ fontSize: '10px',  padding: '0.34em 0.80em', fontWeight: 900 }}
-          >
-            -
-          </button> */}
+          {isExpanded ? 'Hide' : 'Show'} Income
+        </button>
+      </div>
 
-          {idx === 0 ? (
-            <>
-              <button
-                onClick={() => addIncome(idx)}
-                title="Add Income"
-                style={{
-                  fontSize: "0.75em",
-                  padding: "2px 8px",
-                  width: 24,
-                  height: 24,
-                  marginRight: 4,
-                }}
-              >
-                +
-              </button>
-              <span style={{ width: 24, height: 24 }}></span>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => addIncome(idx)}
-                title="Add Income"
-                style={{
-                  fontSize: "0.75em",
-                  padding: "2px 8px",
-                  width: 24,
-                  height: 24,
-                  marginRight: 4,
-                }}
-              >
-                +
-              </button>
-              <button
-                onClick={() => removeIncome(idx)}
-                title="Remove Income"
-                disabled={incomes.length === 1}
-                style={{
-                  fontSize: "0.75em",
-                  padding: "2px 8px",
-                  width: 24,
-                  height: 24,
-                  marginRight: 4,
-                }}
-              >
-                -
-              </button>
-            </>
+      {(showAddCategory || showAddAccount) && isExpanded && (
+        <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+          {showAddCategory && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', border: '1px solid #e5e7eb', borderRadius: 8, padding: 8 }}>
+              <span style={{ fontWeight: 600 }}>New income category:</span>
+              <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="Category name" style={{ padding: '6px 10px', border: '1px solid #ced4da', borderRadius: 6 }} onKeyDown={(e) => { if (e.key === 'Enter') addNewCategory(); if (e.key === 'Escape') setShowAddCategory(false); }} />
+              <button onClick={addNewCategory} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#0ea5e9', color: '#fff' }}>Add</button>
+              <button onClick={() => { setShowAddCategory(false); setPendingRowForCategory(null); }} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', color: '#1f2937' }}>Cancel</button>
+              <button onClick={() => removeCategory(newCategory.trim())} disabled={!newCategory.trim() || rows.some(r => r.category === newCategory.trim()) || categories.length <= 1} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#dc2626', color: '#fff' }}>Remove</button>
+            </div>
+          )}
+          {showAddAccount && (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', border: '1px solid #e5e7eb', borderRadius: 8, padding: 8 }}>
+              <span style={{ fontWeight: 600 }}>New account:</span>
+              <input type="text" value={newAccount} onChange={(e) => setNewAccount(e.target.value)} placeholder="Account name" style={{ padding: '6px 10px', border: '1px solid #ced4da', borderRadius: 6 }} onKeyDown={(e) => { if (e.key === 'Enter') addNewAccount(); if (e.key === 'Escape') setShowAddAccount(false); }} />
+              <button onClick={addNewAccount} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#0ea5e9', color: '#fff' }}>Add</button>
+              <button onClick={() => { setShowAddAccount(false); setPendingRowForAccount(null); }} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#fff', color: '#1f2937' }}>Cancel</button>
+              <button onClick={() => removeAccount(newAccount.trim())} disabled={!newAccount.trim() || rows.some(r => r.account === newAccount.trim()) || accounts.length <= 1} style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #e5e7eb', background: '#dc2626', color: '#fff' }}>Remove</button>
+            </div>
           )}
         </div>
-      ))}
-      <div style={{ marginTop: 16, fontWeight: "bold" }}>
-        Total Income:{" "}
-        {totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      )}
+
+      {isExpanded && (
+        <div style={{ display: 'grid', gap: 8 }}>
+          {rows.length === 0 ? (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+              <div>No income sources yet.</div>
+              <button
+                onClick={() => {
+                  const newRow = {
+                    id: `inc-${Date.now()}`,
+                    date: new Date().toISOString().split('T')[0],
+                    account: accounts[0] || 'Checking',
+                    category: categories[0] || 'Salary',
+                    payee: '',
+                    amount: 0,
+                    type: 'income' as const
+                  };
+                  setRows([newRow]);
+                }}
+                style={{
+                  marginTop: '10px',
+                  padding: '8px 16px',
+                  background: '#0ea5e9',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer'
+                }}
+              >
+                Create First Income Source
+              </button>
+      </div>
+          ) : (
+                         rows.map((row) => (
+              <TransactionRow
+                key={row.id}
+                value={row}
+                categories={categories}
+                accounts={accounts}
+                payeeSuggestions={payeeSuggestions}
+                onChange={handleChange}
+                onAdd={handleAdd}
+                onRemove={handleRemove}
+                onNewCategoryRequested={(id) => { setPendingRowForCategory(id); setShowAddCategory(true); }}
+                onNewAccountRequested={(id) => { setPendingRowForAccount(id); setShowAddAccount(true); }}
+                lineBalance={0} // Income doesn't need running balance
+                isIncome={true}
+              />
+            ))
+          )}
+        </div>
+      )}
+
+      <div style={{ marginTop: 16, fontWeight: "bold", textAlign: "center" }}>
+        Total Income: ${totalIncome.toLocaleString(undefined, { minimumFractionDigits: 2 })}
       </div>
     </div>
   );

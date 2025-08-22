@@ -29,6 +29,39 @@ body,
   border: 3px solid #bdbdbd;
 }
 
+/* Enhanced title styling for better contrast */
+h1, h2, h3 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Component spacing improvements */
+.expense-input-container,
+.savings-goal,
+.income-container {
+  margin-bottom: 32px;
+}
+
+/* Enhanced button styling */
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Input field enhancements */
+input, select {
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
 /* Ensure full viewport usage when needed */
 #root {
   min-height: 100vh;

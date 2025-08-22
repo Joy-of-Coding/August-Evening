@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Budget Buddy Cache</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; background: #0ea5e9; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .status { margin: 20px 0; padding: 10px; border-radius: 6px; }
+        .success { background: #d1fae5; color: #065f46; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <h1>Budget Buddy Cache Management</h1>
+    
+    <div id="status" class="info">
+        Ready to clear cache. This will reset your transaction data but keep categories and accounts.
+    </div>
+    
+    <button onclick="clearCache()">Clear Transaction Cache</button>
+    <button onclick="clearAll()">Clear All Data (Categories & Accounts too)</button>
+    <button onclick="checkStatus()">Check Current Status</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        function clearCache() {
+            const keysToClear = [
+                'bb_tx_fixed',
+                'bb_tx_discretionary',
+                'bb_account_balances'
+            ];
+            
+            let cleared = 0;
+            keysToClear.forEach(key => {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    cleared++;
+                }
+            });
+            
+            document.getElementById('status').innerHTML = `Cleared ${cleared} transaction-related keys. Categories and accounts preserved.`;
+            document.getElementById('status').className = 'success';
+            checkStatus();
+        }
+        
+        function clearAll() {
+            const allKeys = [
+                'bb_tx_fixed',
+                'bb_tx_discretionary',
+                'bb_account_balances',
+                'bb_categories',
+                'bb_accounts'
+            ];
+            
+            let cleared = 0;
+            allKeys.forEach(key => {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    cleared++;
+                }
+            });
+            
+            document.getElementById('status').innerHTML = `Cleared ${cleared} keys. All data reset to defaults.`;
+            document.getElementById('status').className = 'success';
+            checkStatus();
+        }
+        
+        function checkStatus() {
+            const keys = [
+                'bb_tx_fixed',
+                'bb_tx_discretionary',
+                'bb_account_balances',
+                'bb_categories',
+                'bb_accounts'
+            ];
+            
+            let results = '<h3>Current Cache Status:</h3>';
+            keys.forEach(key => {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    try {
+                        const parsed = JSON.parse(value);
+                        if (Array.isArray(parsed)) {
+                            results += `<div><strong>${key}:</strong> ${parsed.length} items</div>`;
+                        } else if (typeof parsed === 'object') {
+                            results += `<div><strong>${key}:</strong> ${Object.keys(parsed).length} properties</div>`;
+                        } else {
+                            results += `<div><strong>${key}:</strong> ${value}</div>`;
+                        }
+                    } catch {
+                        results += `<div><strong>${key}:</strong> ${value}</div>`;
+                    }
+                } else {
+                    results += `<div><strong>${key}:</strong> <em>not set</em></div>`;
+                }
+            });
+            
+            document.getElementById('results').innerHTML = results;
+        }
+        
+        // Check status on load
+        checkStatus();
+    </script>
+</body>
+</html>
