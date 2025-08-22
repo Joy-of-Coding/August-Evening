@@ -157,8 +157,8 @@ const SpendingByCategoryPie: React.FC<SpendingByCategoryPieProps> = ({
                   background: colorForIndex(index),
                 }}
               />
-              <span style={{ color: '#111827', fontWeight: 600 }}>{categoryLabel}</span>
-              <span style={{ color: "#6B7280", fontWeight: 600 }}>{percent.toFixed(1)}%</span>
+              <span style={{ color: '#2dace3ff', fontWeight: 600 }}>{categoryLabel}</span>
+              <span style={{ color: "#70b8deff", fontWeight: 600 }}>{percent.toFixed(1)}%</span>
             </div>
           );
         })}
