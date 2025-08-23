@@ -27,10 +27,11 @@ interface Props {
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "8px 10px",
+  padding: "2px 6px",
   border: "1px solid #ced4da",
   borderRadius: 4,
   fontSize: 14,
+  boxShadow: "0 4px 8px rgba(0, 0, 0, .6)",
 };
 
 const TransactionRow: React.FC<Props> = ({
@@ -51,12 +52,12 @@ const TransactionRow: React.FC<Props> = ({
       style={{
         display: "grid",
         gridTemplateColumns: "1.1fr 1fr 1fr 2fr 1fr auto auto",
-        gap: 10,
+        gap: 5,
         alignItems: "center",
-        padding: 10,
-        border: "1px solid #e5e7eb",
+        padding: 1,
+        
         borderRadius: 8,
-        background: "#fff",
+        
       }}
     >
       <input
