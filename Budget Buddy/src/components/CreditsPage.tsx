@@ -63,7 +63,7 @@ const developers: Developer[] = [
   {
     name: "Lisa Dean",
     role: "Developer",
-    link: "https://github.com/lisadean",
+    link: "https://github.com/lrdean",
     linkType: "github",
   },
 
