@@ -15,7 +15,7 @@ const developers: Developer[] = [
   {
     name: "Mindi Briese",
     role: "Project Manager",
-    link: "https://github.com/mindibriese",
+    link: "https://github.com/mbriese",
     linkType: "github",
   },
 
@@ -48,7 +48,7 @@ const developers: Developer[] = [
   {
     name: "Michelle Evans",
     role: "UI/UX Designer",
-    link: "https://github.com/michelleevans",
+    link: "https://github.com/mevans65",
     linkType: "github",
   },
 
@@ -69,28 +69,28 @@ const developers: Developer[] = [
   {
     name: "Eddy Nelson Rivera",
     role: "Developer",
-    link: "https://github.com/eddynrivera",
+    link: "https://github.com/enr78",
     linkType: "github",
   },
 
   {
     name: "Jas Atanasievska",
     role: "Developer",
-    link: "https://github.com/jasatanasievska",
+    link: "https://github.com/bonzita",
     linkType: "github",
   },
 
   {
     name: "Kai Pannu",
     role: "Developer",
-    link: "https://github.com/kai-pannu",
+    link: "https://github.com/kai-by-design",
     linkType: "github",
   },
 
 {
   name: "Katrina Wright",
   role: "Producer",
-  link: "https://github.com/katrina-wright",
+  link: "https://github.com/katrinawright",
   linkType: "github",
 },
 ];
